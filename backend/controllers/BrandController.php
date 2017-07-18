@@ -9,44 +9,92 @@ use yii\web\UploadedFile;
 class BrandController extends \yii\web\Controller
 {
     //>>>>>>>>>>>>>>>>>>>>>>>>>添加品牌>>>>>>>>>>>>>>>>>>>>>>>>>>
-    public function actionAdd(){
+    public function actionAdd()
+    {
         //实例化brand模型
-        $model=new Brand();
+        $model = new Brand();
         //实例化request模型
-        $request=new Request();
+        $request = new Request();
         //判断传值方式
-        if($request->isPost){
+        if ($request->isPost) {
             $model->load($request->post());
-            $model->logoFile=UploadedFile::getInstance($model,'logoFile');
+            $model->logoFile = UploadedFile::getInstance($model, 'logoFile');
 //            echo 111;exit;
-            if($model->validate()){
+            if ($model->validate()) {
 //                echo 111;exit;
-                if($model->logoFile){
-                    $d=\yii::getAlias('@webroot').'/upload/'.date('Ymd');
-                    if(!is_dir($d)){
+                if ($model->logoFile) {
+                    $d = \yii::getAlias('@webroot') . '/upload/' . date('Ymd');
+                    if (!is_dir($d)) {
                         mkdir($d);
                     }
-                    $fileName='/upload/'.date('Ymd').'/'.uniqid().'.'.$model->logoFile->extension;
-                    $model->logoFile->saveAs(\yii::getAlias('@webroot').$fileName,false);
-                    $model->logo=$fileName;
+                    $fileName = '/upload/' . date('Ymd') . '/' . uniqid() . '.' . $model->logoFile->extension;
+                    $model->logoFile->saveAs(\yii::getAlias('@webroot') . $fileName, false);
+                    $model->logo = $fileName;
                 }
                 $model->save(false);
-                echo 1111;
-
-            } else{
+                return $this->redirect(['brand/index']);
+            } else {
                 //验证失败 打印错误信息
-                var_dump($model->getErrors());exit;
+                var_dump($model->getErrors());
+                exit;
             }
         }
-        return $this->render('add',['model'=>$model]);
+        return $this->render('add', ['model' => $model]);
     }
 
-
-    public function actionIndex(){
-        $model=new Brand();
-        $models=$model->find()->all();
+//>>>>>>>>>>>>>>>>>>>首页显示>>>>>>>>>>>>>>>>>>>>>
+    public function actionIndex()
+    {
+        $model = new Brand();
+        $models = $model->find()->all();
 //        var_dump($models);exit;
-        return $this->render('index',['models'=>$models]);
+        return $this->render('index', ['models' => $models]);
     }
 
+    //>>>>>>>>>>>>>>>>>删除功能>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    public function actionDelete($id)
+    {
+        $model = new Brand();
+        $row = $model->findOne($id);
+        $row->status=-1;
+        $row->save();
+        return $this->redirect(['brand/index']);
+    }
+
+    //>>>>>>>>>>>>>>>>>>>>修改功能>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    public function actionEdit($id)
+    {
+        $model = Brand::findOne($id);
+        //实例化request模型
+        $request = new Request();
+        //判断传值方式
+        if ($request->isPost) {
+            $model->load($request->post());
+            $model->logoFile = UploadedFile::getInstance($model, 'logoFile');
+//            echo 111;exit;
+            if ($model->validate()) {
+//                echo 111;exit;
+                if ($model->logoFile) {
+                    $d = \yii::getAlias('@webroot') . '/upload/' . date('Ymd');
+                    if (!is_dir($d)) {
+                        mkdir($d);
+                    }
+                    $fileName = '/upload/' . date('Ymd') . '/' . uniqid() . '.' . $model->logoFile->extension;
+                    unlink(\yii::getAlias('@webroot').$model->logo);
+                    $model->logoFile->saveAs(\yii::getAlias('@webroot') . $fileName, false);
+                    $model->logo = $fileName;
+                }
+                $model->save(false);
+                return $this->redirect(['brand/index']);
+            } else {
+                //验证失败 打印错误信息
+                var_dump($model->getErrors());
+                exit;
+            }
+
+
+        }
+        return $this->render('add', ['model' => $model]);
+
+    }
 }
