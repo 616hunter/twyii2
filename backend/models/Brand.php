@@ -27,6 +27,15 @@ class Brand extends \yii\db\ActiveRecord
 //        }
       return $options[$status];
     }
+    public static function statusOptions($del=true){
+        $options= [
+            -1=>'删除',0=>'隐藏',1=>'正常'
+        ];
+        if($del){
+            unset($options['-1']);
+        }
+        return $options;
+    }
     /**
      * @inheritdoc
      */
@@ -44,7 +53,8 @@ class Brand extends \yii\db\ActiveRecord
             [['name','intro','status','sort'],'required'],
             [['sort', 'status'], 'integer'],
             [['name'], 'string', 'max' => 50],
-            ['logoFile','file','extensions'=>['jpg','png','gif']],
+            [['logo'],'string','max'=>255],
+//            ['logo','file','extensions'=>['jpg','png','gif']],
         ];
     }
 

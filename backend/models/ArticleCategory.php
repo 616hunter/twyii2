@@ -23,6 +23,15 @@ class ArticleCategory extends \yii\db\ActiveRecord
         ];
         return $options[$option];
     }
+    public static function statusOptions($del){
+        $options= [
+            -1=>'删除',0=>'隐藏',1=>'正常'
+        ];
+        if($del){
+            unset($options['-1']);
+        }
+        return $options;
+    }
     /**
      * @inheritdoc
      */

@@ -28,7 +28,7 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => 'My Company',
+        'brandLabel' => '后台管理',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
@@ -37,6 +37,7 @@ AppAsset::register($this);
     $menuItems = [
         ['label' => 'Home', 'url' => ['/site/index']],
     ];
+    //是游客就显示登录，不是游客就显示内容
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
@@ -48,6 +49,7 @@ AppAsset::register($this);
             )
             . Html::endForm()
             . '</li>';
+
     }
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
@@ -67,7 +69,7 @@ AppAsset::register($this);
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
+        <p class="pull-left">&copy;后台管理 <?= date('Y') ?></p>
 
         <p class="pull-right"><?= Yii::powered() ?></p>
     </div>
