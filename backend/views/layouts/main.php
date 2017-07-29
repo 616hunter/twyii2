@@ -28,28 +28,54 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => '后台管理',
-        'brandUrl' => Yii::$app->homeUrl,
+        'brandLabel' => '后台',
+        'brandUrl' => '/goods/index',
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
-    $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
-    ];
+    $menuItems=[];
+    $model=\backend\models\Menu::find()->where('parent_id=1')->all();
+    //得到所有的数组
+    foreach($model as $v){
+        $items=[];
+        //如果有下级分类就得到对应的地址
+         $menus=\backend\models\Menu::find()->where('parent_id='.$v->id)->all();
+         //存在就生成对应的数据
+             foreach($menus as $menu){
+                 //判断权限
+                 if(\yii::$app->user->can($menu->url)){
+                     //如果有子级就添加到$menuItems中
+                     $items[]=['label'=>$menu->name,'url'=>'/'.$menu->url];
+                 }
+             }
+         if(!empty($items)){
+             $menuItems[]=['label'=>$v->name, 'items'=>$items];
+         }
+     }
     //是游客就显示登录，不是游客就显示内容
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+        $menuItems[] = ['label' => '登录', 'url' => ['admin/login']];
     } else {
-        $menuItems[] = '<li>'
-            . Html::beginForm(['/site/logout'], 'post')
-            . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link logout']
-            )
-            . Html::endForm()
-            . '</li>';
-
+//        $menuItems[] = '<li>'
+//            . Html::beginForm(['/admin/password'], 'get')
+//            . Html::submitButton(
+//                '修改密码 ',
+//                ['class' => 'btn btn-link logout']
+//            )
+//            . Html::endForm().
+//                '</li>'.
+//                '<li>'
+//            . Html::beginForm(['/admin/logout'], 'post')
+//            . Html::submitButton(
+//                '注销 (' . Yii::$app->user->identity->username. ')',
+//                ['class' => 'btn btn-link logout']
+//            )
+//            . Html::endForm()
+//            . '</li>';
+        $menuItems[]=['label'=>'个人中心','items'=>[['label'=>'退出('.\yii::$app->user->identity->username.')','url'=>'/admin/logout'],
+                                        ['label'=>'修改密码','url'=>'/admin/password']]
+        ];
     }
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],

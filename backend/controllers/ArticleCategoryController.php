@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\ArticleCategory;
 use yii\web\Request;
 
@@ -10,10 +11,8 @@ class ArticleCategoryController extends \yii\web\Controller
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>首页>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     public function actionIndex(){
         $models=ArticleCategory::find()->all();
-//        var_dump($models);exit;
         return $this->render('index',['models'=>$models]);
     }
-
 
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>逻辑删除>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     public function actionDelete($id){
@@ -37,7 +36,7 @@ class ArticleCategoryController extends \yii\web\Controller
         }
         return $this->render('add',['model'=>$model]);
     }
-    //>>>>>>>>>>>>>>>>>>>>>>>>>>>修改功能>>>>>>>>>>>>>>>>>>
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>修改功能>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     public function actionEdit($id){
         $model=ArticleCategory::findOne($id);
         $row=$model->findOne($id);
@@ -51,5 +50,11 @@ class ArticleCategoryController extends \yii\web\Controller
         }
         return $this->render('add',['model'=>$row]);
     }
-
+    public function behaviors(){
+        return [
+            'rbac'=>[
+                'class'=>RbacFilter::className(),
+            ]
+        ];
+    }
 }

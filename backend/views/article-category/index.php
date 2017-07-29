@@ -15,8 +15,8 @@
             <td><?=$model->sort?></td>
             <td><?=\backend\models\Brand::statusOption($model->status)?></td>
             <td>
-                <?=\yii\bootstrap\Html::a('修改',['article-category/edit','id'=>$model->id],['class'=>'btn btn-info'])?>
-                <?=\yii\bootstrap\Html::a('删除',['article-category/delete','id'=>$model->id],['class'=>'btn btn-danger'])?>
+                <?=\yii::$app->user->can('article-category/edit')?\yii\bootstrap\Html::a('修改',['article-category/edit','id'=>$model->id],['class'=>'btn btn-info']):''?>
+                <?=\yii::$app->user->can('article-category/delete')?\yii\bootstrap\Html::a('删除',['article-category/delete','id'=>$model->id],['class'=>'btn btn-danger']):''?>
             </td>
 
         </tr>
