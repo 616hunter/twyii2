@@ -6,8 +6,7 @@ use backend\filters\RbacFilter;
 use backend\models\ArticleCategory;
 use yii\web\Request;
 
-class ArticleCategoryController extends \yii\web\Controller
-{
+class ArticleCategoryController extends \yii\web\Controller{
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>首页>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     public function actionIndex(){
         $models=ArticleCategory::find()->all();

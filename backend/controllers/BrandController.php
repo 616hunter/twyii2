@@ -133,11 +133,11 @@ class BrandController extends \yii\web\Controller
         $qiniu->uploadFile($_FILES['tmp_name'],$key);
         $url = $qiniu->getLink($key);
     }
-    public function behaviors(){
-        return [
-            'rbac'=>[
-                'class'=>RbacFilter::className(),
-            ]
-        ];
-    }
+//    public function behaviors(){
+//        return [
+//            'rbac'=>[
+//                'class'=>RbacFilter::className(),
+//            ]
+//        ];
+//    }
 }
