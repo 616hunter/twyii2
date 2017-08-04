@@ -42,7 +42,7 @@ class CarController extends Controller{
             $cookies->add($cookie);
         }else{
             //用户已登录，操作购物车数据表
-            $num=Cart::find()->where('goods_id='.$goods_id.' and member_id='.\yii::$app->user->id)->one();
+            $num=Cart::findOne(['goods_id'=>$goods_id,'member_id'=>\yii::$app->user->id]);
             //判断之前是否有添加相同的商品,有就累加,没有就创建新的
             if($num){
                 $num->member_id=\yii::$app->user->id;
@@ -53,8 +53,9 @@ class CarController extends Controller{
                 $model=new Cart();
                 $model->goods_id=$goods_id;
                 $model->member_id=\yii::$app->user->id;
-                $model=new Cart();
                 $model->amounts=$amount;
+                var_dump($model->goods_id,$model->member_id);
+//                var_dump($model->getErrors());exit;
                 $model->save();
             }
         }
@@ -210,12 +211,20 @@ class CarController extends Controller{
                 }
             }
         }
+    //购物最后一步
     public function actionEnd(){
         return $this->render('flow3');
     }
     //查看订单信息
     public function actionOrdered(){
+        //查询出订单表
         $model=Order::find()->where(['member_id'=>\yii::$app->user->id])->all();
         return $this->render('ordered',['models'=>$model]);
     }
+    //订单删除表
+    public function actionDeleteOrder($id){
+    $model=OrderGoods::findOne(['id'=>$id]);
+        $model->delete();
+        return $this->redirect('ordered');
+}
 }

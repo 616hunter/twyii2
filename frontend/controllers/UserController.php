@@ -56,6 +56,7 @@ class UserController extends \yii\web\Controller{
             if($model->load(\yii::$app->request->post())&&$model->validate()){
                 //根据名字去数据库查询数据
                 $name=User::findOne(['username'=>$model->username]);
+                if($name){
                 //验证hash密码
                 if(\yii::$app->security->validatePassword($model->password,$name->password_hash)){
                     //保存cookies
@@ -85,8 +86,9 @@ class UserController extends \yii\web\Controller{
                     return $this->redirect(['goods/index']);
 
                 }else{
-                    return $this->render('login',['model'=>$model]);
                 }
+                }
+                return $this->render('login',['model'=>$model]);
             };
         }
         return $this->render('login',['model'=>$model]);

@@ -24,7 +24,7 @@
 			</div>
 			<div class="topnav_right fr">
 				<ul>
-					<li>您好，欢迎来到京西！[<a href="login.html">登录</a>] [<a href="register.html">免费注册</a>] </li>
+					<li><?= \yii::$app->user->isGuest?'[<a href="">登录</a>][<a href="register.html">免费注册</a>]':\yii::$app->user->identity->username.':欢迎来到京西';?></li>
 					<li class="line">|</li>
 					<li>我的订单</li>
 					<li class="line">|</li>
@@ -501,7 +501,7 @@
 							<td>￥<?=$v->total?> <?=\app\models\Order::$send[$v->delivery_id]['func']?></td>
 							<td><?=date('Ymd H:i:s' ,$v->create_time)?></td>
 							<td><?=\app\models\Order::$status[$v->status]?></td>
-							<td><a href="">查看</a> | <a href="">删除</a></td>
+							<td> <a href="/car/delete-order?id=<?=$m->id?>">删除</a></td>
 						</tr>
 					<?php endforeach;?>
 					<?php endforeach;?>

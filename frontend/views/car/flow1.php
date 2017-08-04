@@ -22,7 +22,7 @@
 			</div>
 			<div class="topnav_right fr">
 				<ul>
-					<li><?= \yii::$app->user->isGuest?'[<a href="">登录</a>][<a href="register.html">免费注册</a>]':\yii::$app->user->identity->username.':欢迎来到京西！';?> </li>
+					<li><?= \yii::$app->user->isGuest?'[<a href="">登录</a>][<a href="register.html">免费注册</a>]':\yii::$app->user->identity->username.':欢迎来到京西';?></li>
 					<li class="line">|</li>
 					<li>我的订单</li>
 					<li class="line">|</li>

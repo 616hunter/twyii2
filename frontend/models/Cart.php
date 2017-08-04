@@ -15,8 +15,7 @@ use Yii;
 class Cart extends \yii\db\ActiveRecord
 {
     public $amount;
-    public $member_id;
-    public $goods_id;
+
     /**
      * @inheritdoc
      */
