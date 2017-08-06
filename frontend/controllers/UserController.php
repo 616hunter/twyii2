@@ -24,28 +24,26 @@ class UserController extends \yii\web\Controller{
     //.......................................注册功能
     public function actionRegister(){
         $model=new User();
+        //使用场景
         $model->scenario = User::SCENARIO_REGISTER;
-        $session=\yii::$app->session;
-            if($model->load(\yii::$app->request->post())&&$model->validate()){
-                    $model->created_at=time();
-                    $model->password_hash=\yii::$app->security->generatePasswordHash($model->password);
-                    $model->auth_key=\yii::$app->security->generateRandomString();
-                    $model->status=1;
+        if($model->load(\yii::$app->request->post())&&$model->validate()){
+            $model->created_at=time();
+            $model->password_hash=\yii::$app->security->generatePasswordHash($model->password);
+            $model->auth_key=\yii::$app->security->generateRandomString();
+            $model->status=1;
 //                    var_dump($model->captcha);exit;
-                if($model->password==$model->rePassword){
+            $redis = new \Redis();
+            $redis->connect('127.0.0.1');
+            $tel = $redis->get('tel');
+            $code = $redis->get('code');
+//            var_dump($model);exit;
+            if($model->password==$model->rePassword && $tel == $model->tel && $code == $model->captcha){
+                    //密码加密
                     $model->save(false);
-//                    var_dump($model->getErrors());exit;
-//                    var_dump($session);
-                    //验证手机号码
-//                    var_dump($model->captcha,$session);exit;
-                    if(!$session[$model->tel]==$model->captcha){
-                        //验证不成功
-                        return $this->redirect('register');
-                    }
+                    //跳转
                     return $this->redirect(['user/login']);
-                }else{
-                    $model->addError('rePassword','两次密码不相同');
                 }
+                return $this->redirect('register');
             }
         return $this->render('register',['model'=>$model]);
     }
@@ -80,7 +78,6 @@ class UserController extends \yii\web\Controller{
                                 $new->save(false);
                             }
                             \yii::$app->response->cookies->remove('cart');
-
                         }
                     }
                     return $this->redirect(['goods/index']);
@@ -170,9 +167,13 @@ class UserController extends \yii\web\Controller{
         //必填-短信模板Code
         $request->setTemplateCode("SMS_80245057");
         //选填-假如模板中存在变量需要替换则为必填(JSON格式),友情提示:如果JSON中需要带换行符,请参照标准的JSON协议对换行符的要求,比如短信内容中包含\r\n的情况在JSON中需要表示成\\r\\n,否则会导致JSON在服务端解析失败
-        $code=rand(1000,9999);
-        $session=\yii::$app->session;
-        $session=[$tel=>$code];
+        $code = rand(1000,9999);
+        $redis =new \Redis();
+        $redis->connect('127.0.0.1',6379);
+        $redis->set('tel',$tel);
+        $redis->set('code',$code);
+//        var_dump($redis->get('code'));
+//        var_dump($redis->get('tel'));exit;
         //保存验证码到sessions中
         $request->setTemplateParam("{\"code\":$code}");
         //选填-发送短信流水号

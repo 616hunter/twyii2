@@ -118,7 +118,6 @@ class BrandController extends \yii\web\Controller
     }
     //测试七牛云
     public function actionQiniu(){
-
         $config = [
             'adminEmail' => 'admin@example.com',
             'qiniu'=>[

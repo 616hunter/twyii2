@@ -31,8 +31,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public $province;
     public $city;
     public $area;
-    public $last_login_time;
-    public $last_login_ip;
     public $captcha;
     /**
      * @inheritdoc
